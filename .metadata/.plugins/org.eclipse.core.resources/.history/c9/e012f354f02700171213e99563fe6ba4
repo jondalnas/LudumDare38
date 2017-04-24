@@ -1,0 +1,5 @@
+package com.Jonas.LD38.Jobs.Actions;
+
+public class BuildAction extends JobAction {
+	
+}

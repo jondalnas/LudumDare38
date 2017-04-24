@@ -1,0 +1,39 @@
+package com.Jonas.LD38.Jobs;
+
+import java.util.ArrayList;
+import java.util.List;
+
+public class JobManager {
+	public List<JobContainer> joblist = new ArrayList<JobContainer>();
+	
+	public JobManager() {
+	}
+	
+	public void add(Job job, int quantity) {
+		
+		for (int i = 0; i < joblist.size(); i++) {
+			if (joblist.get(i).job.getClass().equals(job)) {
+				joblist.get(i).quantity += quantity;
+				return;
+			}
+		}
+
+		joblist.add(new JobContainer(job, quantity));
+	}
+	
+	public boolean contains(Job job) {
+		for (int i = 0; i < joblist.size(); i++) {
+			if (joblist.get(i).job.getClass().equals(job)) return true;
+		}
+		
+		return false;
+	}
+
+	public void removeNewest(int quntity) {
+		if (joblist.get(0).quantity - quntity <= 0)
+			joblist.remove(0);
+		else
+			joblist.get(0).quantity -= quntity;
+		
+	}
+}

@@ -1,0 +1,28 @@
+package com.Jonas.LD38.Jobs.Actions;
+
+import com.Jonas.LD38.Entity.Entity;
+import com.Jonas.LD38.Entity.Human;
+import com.Jonas.LD38.Level.Level;
+import com.Jonas.LD38.Level.Tile.Tile;
+
+public class BabyAction extends JobAction {
+	private Human pair;
+	private Tile pariGoingTo;
+	
+	public boolean start(int x, int y, Level level, Human human) {
+		if (pair == null) {
+			for (int i = 0; i < level.entities.size(); i++) {
+				Entity e = level.entities.get(i);
+				if (e instanceof Human) {
+					if (((Human) e).isFemale != human.isFemale) pair = (Human) e;
+				}
+			}
+		} else {
+			pariGoingTo = pair.goingTo;
+		}
+		
+		
+		return false;
+	}
+
+}

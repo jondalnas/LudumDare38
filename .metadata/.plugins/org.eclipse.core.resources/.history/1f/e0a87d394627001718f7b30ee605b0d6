@@ -1,0 +1,18 @@
+package com.Jonas.LD38.Entity;
+
+import com.Jonas.LD38.Grapics.Loader;
+import com.Jonas.LD38.Grapics.Renderer;
+
+public class Entity {
+	public int x, y;
+	public int tex;
+	
+	public Entity(int x, int y) {
+		this.x = x;
+		this.y = y;
+	}
+	
+	public void render(Renderer renderer) {
+		renderer.draw(Loader.Sprites, x, y, tex%16, tex/16, 8, 8);
+	}
+}

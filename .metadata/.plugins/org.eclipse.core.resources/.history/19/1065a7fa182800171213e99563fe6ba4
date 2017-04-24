@@ -1,0 +1,8 @@
+package com.Jonas.LD38.Level.Tile;
+
+public class Grass extends Tile {
+
+	public Grass() {
+		color = 0x58D854;
+	}
+}

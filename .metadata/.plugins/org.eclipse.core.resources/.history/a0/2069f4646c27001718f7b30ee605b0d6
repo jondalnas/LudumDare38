@@ -1,0 +1,25 @@
+package com.Jonas.LD38.Level.Tile;
+
+import com.Jonas.LD38.Entity.Entity;
+import com.Jonas.LD38.Grapics.Renderer;
+
+public class Tile {
+	public int x, y;
+	public int color = 0xFF00FF;
+	public int weight = 1;
+	
+	public Zone zone = Zone.none;
+	
+	public Tile(int x, int y) {
+		this.x = x;
+		this.y = y;
+	}
+	
+	public void render(Renderer renderer) {
+		renderer.setPixel(color, x, y);
+	}
+
+	public boolean collides(Entity e) {
+		return false;
+	}
+}

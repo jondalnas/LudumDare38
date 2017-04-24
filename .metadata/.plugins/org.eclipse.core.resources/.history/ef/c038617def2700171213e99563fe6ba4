@@ -1,0 +1,9 @@
+package com.Jonas.LD38.Jobs;
+
+import com.Jonas.LD38.Level.Tile.Zones;
+
+public class BuildJob extends Job {
+	public BuildJob() {
+		super(Zones.building, new JobAction());
+	}
+}

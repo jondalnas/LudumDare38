@@ -1,0 +1,54 @@
+package com.Jonas.LD38.Level.Tile;
+
+import com.Jonas.LD38.Entity.Entity;
+import com.Jonas.LD38.Grapics.Renderer;
+import com.Jonas.LD38.Level.Level;
+
+public class Tile {
+	public int x, y;
+	public int color = 0xFF00FF;
+	public int weight = 1;
+	
+	public Zones zone = Zones.none;
+	public Level level;
+	
+	public boolean workingOn;
+
+	public boolean collides(Entity e) {
+		return false;
+	}
+	
+	public void render(Renderer renderer) {
+		renderer.setPixel(color, x, y);
+		
+		if (level.game.showZones) {
+			if (zone == Zones.none) return;
+			
+			renderer.setPixel(zone.color, x, y);
+		}
+	}
+
+	public void setZone(Zones zone) {
+		this.zone = zone;
+	}
+
+	public boolean matchZones(Zones zone) {
+		if (this.zone == zone && zone == Zones.building) {
+			if (this instanceof House) return false;
+			
+			for (int y = -4; y <= 4; y++) {
+				System.out.println(y);
+				for (int x = -2; x <= 2; x++) {
+					Tile t = level.getTile(x+this.x, y+this.y);
+					if (t instanceof House || t.workingOn) {
+						return false;
+					}
+				}
+			}
+			
+			return true;
+		}
+		
+		return this.zone == zone;
+	}
+}

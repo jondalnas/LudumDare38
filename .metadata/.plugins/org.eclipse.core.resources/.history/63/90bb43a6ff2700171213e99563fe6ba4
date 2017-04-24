@@ -1,0 +1,10 @@
+package com.Jonas.LD38.Jobs;
+
+import com.Jonas.LD38.Jobs.Actions.ChopAction;
+import com.Jonas.LD38.Level.Tile.Tree;
+
+public class ChopJob extends Job {
+	public ChopJob() {
+		super(new Tree(), new ChopAction());
+	}
+}

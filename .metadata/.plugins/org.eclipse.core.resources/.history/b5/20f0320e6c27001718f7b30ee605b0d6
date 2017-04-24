@@ -1,0 +1,5 @@
+package com.Jonas.LD38.Zones;
+
+enum Zone {
+
+}

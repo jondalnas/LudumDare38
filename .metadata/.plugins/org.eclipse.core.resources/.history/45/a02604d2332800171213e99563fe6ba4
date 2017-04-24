@@ -1,0 +1,19 @@
+package com.Jonas.LD38.Jobs.Actions;
+
+import com.Jonas.LD38.Entity.Human;
+import com.Jonas.LD38.Jobs.Actions.JobAction;
+import com.Jonas.LD38.Level.Level;
+import com.Jonas.LD38.Level.Tile.Wheet;
+import com.Jonas.LD38.Level.Tile.Zones;
+
+public class GrowAction extends JobAction {
+
+	public boolean start(int x, int y, Level level, Human human) {
+		level.placeTile(new Wheet(), x, y);
+		human.goingTo = level.getClosestTileWithZone(Zones.growing, x, y);
+		human.here = false;
+		
+		if (human.goingTo == null) return true;
+		return false;
+	}
+}

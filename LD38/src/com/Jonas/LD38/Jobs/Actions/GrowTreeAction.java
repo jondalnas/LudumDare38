@@ -1,0 +1,22 @@
+package com.Jonas.LD38.Jobs.Actions;
+
+import com.Jonas.LD38.Entity.Human;
+import com.Jonas.LD38.Jobs.Actions.JobAction;
+import com.Jonas.LD38.Level.Level;
+import com.Jonas.LD38.Level.Tile.Sapling;
+import com.Jonas.LD38.Level.Tile.Tile;
+import com.Jonas.LD38.Level.Tile.Zones;
+
+public class GrowTreeAction extends JobAction {
+
+	public boolean start(int x, int y, Level level, Human human) {
+		level.placeTile(new Sapling(), x, y);
+		Tile tile = level.getClosestTileWithZone(Zones.tree, x, y);
+		human.goingTo = tile;
+		human.here = false;
+		
+		if (human.goingTo == null) return true;
+		tile.workingOn = true;
+		return false;
+	}
+}

@@ -1,0 +1,10 @@
+package com.Jonas.LD38.Entity.Animal;
+
+import com.Jonas.LD38.Entity.Entity;
+
+public class Llama extends Entity {
+
+	public Llama(int x, int y) {
+		super(x, y, 2+2*16);
+	}
+}

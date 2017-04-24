@@ -1,0 +1,7 @@
+package com.Jonas.LD38.Jobs.Actions;
+
+import com.Jonas.LD38.Level.Level;
+
+public abstract class JobAction {
+	public abstract boolean start(int x, int y, Level level);
+}

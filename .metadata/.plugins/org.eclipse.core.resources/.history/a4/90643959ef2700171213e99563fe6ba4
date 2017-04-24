@@ -1,0 +1,11 @@
+package com.Jonas.LD38.Jobs;
+
+public class Job {
+	public Object gotoObject;
+	public JobAction action;
+	
+	Job(Object gotoObject, JobAction action) {
+		this.gotoObject = gotoObject;
+		this.action = action;
+	}
+}

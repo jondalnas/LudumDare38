@@ -1,0 +1,25 @@
+package com.Jonas.LD38.Jobs;
+
+import com.Jonas.LD38.Resources;
+
+public class Cost {
+	public int[] cost;
+	
+	public Cost(int[] cost) {
+		this.cost = cost;
+	}
+	
+	public boolean sufficient() {
+		if (Resources.values()[0].quantity < cost[0]) return false;
+		if (Resources.values()[1].quantity < cost[1]) return false;
+		if (Resources.values()[2].quantity < cost[2]) return false;
+		
+		return true;
+	}
+
+	public void set(int wood, int food, int room) {
+		cost[0] = wood;
+		cost[1] = food;
+		cost[2] = room;
+	}
+}

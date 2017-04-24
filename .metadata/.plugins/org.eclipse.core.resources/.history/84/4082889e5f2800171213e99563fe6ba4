@@ -1,0 +1,19 @@
+package com.Jonas.LD38.Entity.Animal;
+
+import com.Jonas.LD38.Grapics.Loader;
+import com.Jonas.LD38.Grapics.Renderer;
+
+public class Wolf extends Animal {
+	public boolean tamed;
+	
+	public Wolf(int x, int y) {
+		super(x, y, 0+2*16, 20);
+	}
+	
+	public void render(Renderer renderer) {
+		if (xd > 0)
+			renderer.draw(Loader.Sprites, x, y, (tex%16)*8+(tamed?4:0)*8, (tex/16+(isFemale?1:0))*8, 8, 8);
+		else
+			renderer.drawFlip(Loader.Sprites, x, y, (tex%16)*8+(tamed?4:0)*8, (tex/16+(isFemale?1:0))*8, 8, 8);
+	}
+}

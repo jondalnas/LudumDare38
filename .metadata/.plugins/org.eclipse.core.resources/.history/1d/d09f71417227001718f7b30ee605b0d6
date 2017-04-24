@@ -1,0 +1,204 @@
+package com.Jonas.LD38.Level;
+
+import java.util.Random;
+
+import com.Jonas.LD38.Level.Tile.*;
+
+public class LevelGenerator {
+	
+	public static Tile[] generateLevel(int width, int height, Level level) {
+		Random rand = new Random(100);
+		
+		Tile[] tiles = new Tile[width*height];
+		for (int y = 0; y < height; y++) {
+			for (int x = 0; x < width; x++) {
+				tiles[x+y*width] = new Water(x, y);
+			}
+		}
+		
+		for (int y = 1; y < height-1; y++) {
+			for (int x = 1; x < width-1; x++) {
+				
+				if ((x < 15 || y < 15 || x >= width-15 || y >= height-15) && rand.nextInt(100)>95)
+					tiles[x+y*width] = new Water(x, y);
+				else
+					tiles[x+y*width] = new Sand(x, y);
+			}
+		}
+		
+		double chanceOfSurrSand = 97.8;
+
+		int tries = 0;
+		while (tries < 100) {
+			tries++;
+			for (int y = 0; y < height; y++) {
+				for (int x = 0; x < width; x++) {
+					
+					if (tiles[x+y*width] instanceof Water) {
+						Tile n = null;
+						Tile s = null;
+						Tile e = null;
+						Tile w = null;
+						
+						if (rand.nextDouble()*100.0 >= chanceOfSurrSand) {
+							n = new Water(x, y+1);
+						}
+						
+						if (rand.nextDouble()*100.0 >= chanceOfSurrSand) {
+							s = new Water(x, y-1);
+						}
+						
+						if (rand.nextDouble()*100.0 >= chanceOfSurrSand) {
+							e = new Water(x+1, y);
+						}
+						
+						if (rand.nextDouble()*100.0 >= chanceOfSurrSand) {
+							w = new Water(x-1, y);
+						}
+						
+						if (n != null && y+1 < height) tiles[x+(y+1)*width] = n;
+						if (s != null && y-1 >= 0) tiles[x+(y-1)*width] = s;
+						if (e != null && x+1 < width) tiles[(x+1)+y*width] = e;
+						if (w != null && x-1 >= 0) tiles[(x-1)+y*width] = w;
+					}
+				}
+			}
+		}
+		
+		for (int y = 1; y < height-1; y++) {
+			for (int x = 1; x < width-1; x++) {
+				int sand = 0;
+				
+				Tile n = tiles[x+(y+1)*width];
+				Tile s = tiles[x+(y-1)*width];
+				Tile e = tiles[(x+1)+y*width];
+				Tile w = tiles[(x-1)+y*width];
+
+				if (n instanceof Sand) sand++;
+				if (s instanceof Sand) sand++;
+				if (e instanceof Sand) sand++;
+				if (w instanceof Sand) sand++;
+				
+				if (sand < 1) tiles[x+y*width] = new Water(x, y);
+			}
+		}
+
+		for (int y = 5; y < height-5; y++) {
+			for (int x = 5; x < width-5; x++) {
+				
+				if (!(tiles[x+y*width] instanceof Sand)) continue;
+
+				if (!isTileInRadius(Water.class, 5, x, y, width, height, tiles)) tiles[x+y*width] = new Grass(x, y);
+			}
+		}
+		
+		tiles[width/4+height/2*width] = new Tree(width/4, height/2);
+		
+		for (int y = 1; y < height-1; y++) {
+			for (int x = 1; x < width-1; x++) {
+				
+				if (tiles[x+y*width] instanceof Grass && rand.nextDouble()*100.0>99.8)
+					tiles[x+y*width] = new Tree(x, y);
+			}
+		}
+		
+		double chanceOfSurrTree = 95;
+		
+		tries = 0;
+		while (tries < 100) {
+			tries++;
+			for (int y = 0; y < height; y++) {
+				for (int x = 0; x < width; x++) {
+					
+					if (tiles[x+y*width] instanceof Tree) {
+						Tile n = null;
+						Tile s = null;
+						Tile e = null;
+						Tile w = null;
+						
+						if (rand.nextDouble()*100.0 >= chanceOfSurrTree) {
+							n = new Tree(x, y+1);
+						}
+						
+						if (rand.nextDouble()*100.0 >= chanceOfSurrTree) {
+							s = new Tree(x, y-1);
+						}
+						
+						if (rand.nextDouble()*100.0 >= chanceOfSurrTree) {
+							e = new Tree(x+1, y);
+						}
+						
+						if (rand.nextDouble()*100.0 >= chanceOfSurrTree) {
+							w = new Tree(x-1, y);
+						}
+						
+						if (n != null && y+1 < height && tiles[x+(y+1)*width] instanceof Grass) tiles[x+(y+1)*width] = n;
+						if (s != null && y-1 >= 0 && tiles[x+(y-1)*width] instanceof Grass) tiles[x+(y-1)*width] = s;
+						if (e != null && x+1 < width && tiles[(x+1)+y*width] instanceof Grass) tiles[(x+1)+y*width] = e;
+						if (w != null && x-1 >= 0 && tiles[(x-1)+y*width] instanceof Grass) tiles[(x-1)+y*width] = w;
+					}
+				}
+			}
+		}
+		
+		for (int y = 0; y < height; y++) {
+			for (int x = 0; x < width; x++) {
+				if (tiles[x+y*width] instanceof Tree) {
+					if (tiles[x+(y-3)*width] instanceof Tree) level.placeTile(new Grass(), x, y-3);
+					if (tiles[x+(y-2)*width] instanceof Tree) level.placeTile(new Grass(), x, y-2);
+					if (tiles[x+(y-1)*width] instanceof Tree) level.placeTile(new Grass(), x, y-1);
+					if (tiles[x+(y+3)*width] instanceof Tree) level.placeTile(new Grass(), x, y+3);
+					if (tiles[x+(y+2)*width] instanceof Tree) level.placeTile(new Grass(), x, y+2);
+					if (tiles[x+(y+1)*width] instanceof Tree) level.placeTile(new Grass(), x, y+1);
+					if (tiles[(x+1)+(y-3)*width] instanceof Tree) level.placeTile(new Grass(), x+1, y-3);
+					if (tiles[(x+1)+(y-2)*width] instanceof Tree) level.placeTile(new Grass(), x+1, y-2);
+					if (tiles[(x+1)+(y-1)*width] instanceof Tree) level.placeTile(new Grass(), x+1, y-1);
+					if (tiles[(x+1)+(y+3)*width] instanceof Tree) level.placeTile(new Grass(), x+1, y+3);
+					if (tiles[(x+1)+(y+2)*width] instanceof Tree) level.placeTile(new Grass(), x+1, y+2);
+					if (tiles[(x+1)+(y+1)*width] instanceof Tree) level.placeTile(new Grass(), x+1, y+1);
+					if (tiles[(x-1)+(y-3)*width] instanceof Tree) level.placeTile(new Grass(), x-1, y-3);
+					if (tiles[(x-1)+(y-2)*width] instanceof Tree) level.placeTile(new Grass(), x-1, y-2);
+					if (tiles[(x-1)+(y-1)*width] instanceof Tree) level.placeTile(new Grass(), x-1, y-1);
+					if (tiles[(x-1)+(y+3)*width] instanceof Tree) level.placeTile(new Grass(), x-1, y+3);
+					if (tiles[(x-1)+(y+2)*width] instanceof Tree) level.placeTile(new Grass(), x-1, y+2);
+					if (tiles[(x-1)+(y+1)*width] instanceof Tree) level.placeTile(new Grass(), x-1, y+1);
+					if (tiles[(x+2)+(y-2)*width] instanceof Tree) level.placeTile(new Grass(), x+2, y-2);
+					if (tiles[(x+2)+(y-1)*width] instanceof Tree) level.placeTile(new Grass(), x+2, y-1);
+					if (tiles[(x+2)+(y+2)*width] instanceof Tree) level.placeTile(new Grass(), x+2, y+2);
+					if (tiles[(x+2)+(y+1)*width] instanceof Tree) level.placeTile(new Grass(), x+2, y+1);
+					if (tiles[(x-2)+(y-2)*width] instanceof Tree) level.placeTile(new Grass(), x-2, y-2);
+					if (tiles[(x-2)+(y-1)*width] instanceof Tree) level.placeTile(new Grass(), x-2, y-1);
+					if (tiles[(x-2)+(y+2)*width] instanceof Tree) level.placeTile(new Grass(), x-2, y+2);
+					if (tiles[(x-2)+(y+1)*width] instanceof Tree) level.placeTile(new Grass(), x-2, y+1);
+					if (tiles[(x-2)+(y-1)*width] instanceof Tree) level.placeTile(new Grass(), x-3, y-1);
+					if (tiles[(x-2)+(y+1)*width] instanceof Tree) level.placeTile(new Grass(), x+3, y+1);
+					if (tiles[(x-3)+y*width] instanceof Tree) level.placeTile(new Grass(), x-3, y);
+					if (tiles[(x-2)+y*width] instanceof Tree) level.placeTile(new Grass(), x-2, y);
+					if (tiles[(x-1)+y*width] instanceof Tree) level.placeTile(new Grass(), x-1, y);
+					if (tiles[(x+3)+y*width] instanceof Tree) level.placeTile(new Grass(), x+3, y);
+					if (tiles[(x+2)+y*width] instanceof Tree) level.placeTile(new Grass(), x+2, y);
+					if (tiles[(x+1)+y*width] instanceof Tree) level.placeTile(new Grass(), x+1, y);
+				}
+			}
+		}
+		
+		return tiles;
+	}
+	
+	private static boolean isTileInRadius(Class<?> t, int r, int x, int y, int width, int height, Tile[] tiles) {
+		for (int yy = -r; yy < r; yy++) {
+			for (int xx = -r; xx < r; xx++) {
+				
+				if (xx*xx+yy*yy>=r*r) continue;
+				
+				int x0 = xx+x;
+				int y0 = yy+y;
+				if (tiles[x0+y0*width].getClass().equals(t)) {
+					return true;
+				}
+			}
+		}
+		
+		return false;
+	}
+}

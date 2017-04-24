@@ -1,0 +1,14 @@
+package com.Jonas.LD38.Jobs;
+
+import com.Jonas.LD38.Entity.Human;
+import com.Jonas.LD38.Jobs.Actions.JobAction;
+import com.Jonas.LD38.Level.Level;
+
+public class GrowTreeAction extends JobAction {
+
+	public boolean start(int x, int y, Level level, Human human) {
+		
+		
+		return true;
+	}
+}

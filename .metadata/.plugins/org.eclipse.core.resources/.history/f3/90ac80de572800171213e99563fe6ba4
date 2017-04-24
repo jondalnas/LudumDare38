@@ -1,0 +1,40 @@
+package com.Jonas.LD38.Entity;
+
+import com.Jonas.LD38.Grapics.Loader;
+import com.Jonas.LD38.Grapics.Renderer;
+
+public class Particle {
+	public int x, y;
+	public double fuzzX, fuzzY;
+	public double dx, dy;
+	private int tex;
+	
+	private int life;
+	private int lifespan;
+	public boolean dead;
+
+	public Particle(int tex, int x, int y, double dx, double dy, int lifespan) {
+		this.fuzzX = x;
+		this.fuzzY = y;
+		this.dx = dx;
+		this.dy = dy;
+		this.lifespan = lifespan;
+		this.tex = tex;
+	}
+	
+	public void tick() {
+		if (life++ >= lifespan) dead = true;
+		fuzzX += dx;
+		fuzzY += dy;
+
+		dx *= 0.01;
+		dy *= 0.01;
+
+		x = (int) fuzzX;
+		y = (int) fuzzY;
+	}
+	
+	public void render(Renderer renderer) {
+		renderer.draw(Loader.Sprites, x, y, tex%16*8, tex/16*8, 8, 8);
+	}
+}

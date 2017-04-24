@@ -1,0 +1,20 @@
+package com.Jonas.LD38.Jobs;
+
+import com.Jonas.LD38.Level.Level;
+import com.Jonas.LD38.Level.Tile.Grass;
+
+public class ChopJob extends JobAction {
+	private int choppingTimer;
+	
+	
+	public boolean start(int x, int y, Level level) {
+		System.out.println(choppingTimer);
+		
+		if (choppingTimer++ >= 600) {
+			level.placeTile(new Grass(), x, y);
+			return true;
+		}
+		
+		return false;
+	}
+}

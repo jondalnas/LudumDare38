@@ -1,0 +1,7 @@
+package com.Jonas.LD38.Level.Tile;
+
+public class House extends Tile {
+	public House() {
+		color = 0xA81000;
+	}
+}

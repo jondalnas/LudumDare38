@@ -1,0 +1,15 @@
+package com.Jonas.LD38.Level.Tile;
+
+import com.Jonas.LD38.Entity.Entity;
+
+public class Water extends Tile {
+
+	public Water(int x, int y) {
+		super(x, y);	
+		color = 0x0078F8;
+	}
+	
+	public boolean collides(Entity e) {
+		return true;
+	}
+}

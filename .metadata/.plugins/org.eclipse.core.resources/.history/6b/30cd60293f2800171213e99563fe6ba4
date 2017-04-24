@@ -1,0 +1,30 @@
+package com.Jonas.LD38.Entity;
+
+import com.Jonas.LD38.Grapics.Loader;
+import com.Jonas.LD38.Grapics.Renderer;
+
+public class Particle {
+	public int x, y;
+	public int dx, dy;
+	private int tex;
+	
+	private int life;
+	private int lifespan;
+	public boolean dead;
+
+	public Particle(int x, int y, int dx, int dy, int tex, int lifespan) {
+		this.x = x;
+		this.y = y;
+		this.dx = dx;
+		this.dy = dy;
+		this.lifespan = lifespan;
+	}
+	
+	public void tick() {
+		if (life++ >= lifespan) dead = true;
+	}
+	
+	public void renderer(Renderer renderer) {
+		renderer.draw(Loader.Sprites, x, y, tex%16*8, tex/16*8, 8, 8);
+	}
+}

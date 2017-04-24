@@ -1,0 +1,22 @@
+package com.Jonas.LD38.Jobs;
+
+import com.Jonas.LD38.Jobs.Actions.BuildAction;
+import com.Jonas.LD38.Jobs.Actions.ChopAction;
+import com.Jonas.LD38.Jobs.Actions.JobAction;
+import com.Jonas.LD38.Level.Tile.Tree;
+import com.Jonas.LD38.Level.Tile.Zones;
+
+public enum Job {
+	chop(new Tree(), new ChopAction(), "Chop"),
+	build(Zones.building, new BuildAction(), "Build");
+	
+	public Object gotoObject;
+	public JobAction action;
+	public String name;
+	
+	Job(Object gotoObject, JobAction action, String name) {
+		this.gotoObject = gotoObject;
+		this.action = action;
+		this.name = name;
+	}
+}

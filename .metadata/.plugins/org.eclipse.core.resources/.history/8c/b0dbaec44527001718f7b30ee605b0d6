@@ -1,0 +1,5 @@
+package com.Jonas.LD38.Entity.Animal;
+
+public class Llama {
+
+}

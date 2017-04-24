@@ -1,0 +1,42 @@
+package com.Jonas.LD38.Jobs;
+
+import com.Jonas.LD38.Jobs.Actions.BuildAction;
+import com.Jonas.LD38.Jobs.Actions.ChopAction;
+import com.Jonas.LD38.Jobs.Actions.JobAction;
+import com.Jonas.LD38.Level.Tile.Tree;
+import com.Jonas.LD38.Level.Tile.Wheet;
+import com.Jonas.LD38.Level.Tile.Zones;
+
+public enum Job {
+	BUILDINGS("Houses"),
+	BUILD(Zones.building, new BuildAction(), "Build"),
+	REMOVE(Zones.building, new BuildAction(), "Remov"),
+	TREES("Trees"),
+	TREE(Zones.tree, new GrowTreeAction(), "Plant"),
+	CHOP(new Tree(), new ChopAction(), "Chop"),
+	Wheet("Wheet"),
+	PLANT(Zones.growing, new GrowAction(), "Plant"),
+	HARVEST(new Wheet(), new HarvestAction(), "Hrvst");
+	
+	public Object gotoObject;
+	private JobAction action;
+	public String name;
+	public boolean category;
+	
+	public static final int size = Job.values().length;
+	
+	Job(Object gotoObject, JobAction action, String name) {
+		this.gotoObject = gotoObject;
+		this.action = action;
+		this.name = name;
+	}
+	
+	Job(String name) {
+		this.name = name;
+		category = true;
+	}
+	
+	public JobAction getAction() {
+		return action;
+	}
+}

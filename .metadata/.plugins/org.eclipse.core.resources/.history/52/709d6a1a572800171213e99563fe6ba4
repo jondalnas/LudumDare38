@@ -1,0 +1,188 @@
+package com.Jonas.LD38.Entity;
+
+import java.awt.Rectangle;
+import java.util.Random;
+
+import com.Jonas.LD38.Resources;
+import com.Jonas.LD38.Entity.Animal.Animal;
+import com.Jonas.LD38.Grapics.Loader;
+import com.Jonas.LD38.Grapics.Renderer;
+import com.Jonas.LD38.Jobs.Job;
+import com.Jonas.LD38.Jobs.Actions.JobAction;
+import com.Jonas.LD38.Level.Tile.Tile;
+import com.Jonas.LD38.Level.Tile.Zones;
+
+public class Human extends Entity {
+	private double fuzzX, fuzzY;
+	private double speed = 0.2;
+	private double xd, yd;
+	public boolean isFemale;
+	public Tile goingTo;
+	
+	public JobAction action;
+	public Animal hunting;
+	
+	public boolean done = true;
+	public boolean here;
+	private Job currentJob;
+	private int walkingTimer;
+	
+	private boolean starving;
+	public boolean dead = true;
+	private int foodTimer;
+	private int starvingTimer;
+	
+	public boolean attacking;
+	private int attackingTimer;
+	
+	private Random rand = new Random();
+	
+	public Human(int x, int y) {
+		super(x, y, 0+0*16);
+		fuzzX = x;
+		fuzzY = y;
+		
+		isFemale = new Random().nextBoolean();
+		
+		collider = new Rectangle(0, 0, 2, 6);
+	}
+	
+	public Human(int x, int y, boolean isFemale) {
+		super(x, y, 0+0*16);
+		fuzzX = x;
+		fuzzY = y;
+		
+		this.isFemale = isFemale;
+		
+		collider = new Rectangle(0, 0, 2, 6);
+	}
+	
+	public void tick() {
+		if (attacking && attackingTimer++ >= 20) {
+			attackingTimer = 0;
+			attacking = false;
+		}
+		
+		if (!starving && foodTimer++ > 3600) {
+			foodTimer = 0;
+			if (Resources.FOOD.quantity >= 10) Resources.FOOD.remove(10);
+			else {
+				starving = true;
+				level.game.starving++;
+			}
+		}
+		
+		if (starving) {
+			if (Resources.FOOD.quantity < 10) {
+				if (starvingTimer++ >= 3600) {
+					dead = true;
+					for (int i = 0; i < 3; i++) {
+						System.out.println(level.particles.size());
+						level.particles.add(new Particle(4+5*16, x, y, rand.nextDouble()+1, rand.nextDouble()+1, 300));
+					}
+				}
+			} else {
+				Resources.FOOD.remove(20);
+				starving = false;
+				starvingTimer = 0;
+				level.game.starving--;
+			}
+		}
+		
+		if (done) {
+			if (!level.game.manager.joblist.isEmpty()) {
+				for (int i = 0; i < level.game.manager.joblist.size(); i++) {
+					currentJob = level.game.manager.joblist.get(i).job;
+					
+					if (!currentJob.getAction().cost.sufficient()) {
+						currentJob.isPossible = false;
+						currentJob = null;
+						continue;
+					}
+					
+					if (goingTo != null) goingTo.workingOn = false; 
+					
+					if (currentJob.gotoObject instanceof Zones) {
+						goingTo = level.getClosestTileWithZone((Zones) currentJob.gotoObject, x, y);
+					} else if (currentJob.gotoObject instanceof Tile) {
+						goingTo = level.getClosestTile((Tile) currentJob.gotoObject, x, y);
+					} else if (currentJob.gotoObject instanceof Animal) {
+						hunting = level.getClosestAnimal(x, y);
+					}
+					
+					if (goingTo == null && hunting == null) {
+						currentJob.isPossible = false;
+						currentJob = null;
+						continue;
+					}
+					
+					try {
+						action = currentJob.getAction().getClass().newInstance();
+					} catch (InstantiationException | IllegalAccessException e) {
+						e.printStackTrace();
+					}
+					
+					action.cost.buy();
+					
+					if (goingTo != null) goingTo.workingOn = true;
+					
+					level.game.manager.remove(i, 1);
+					
+					directionToTile(goingTo==null?(level.getTile(hunting.x, hunting.y)):goingTo);
+					
+					here = false;
+					done = false;
+					
+					currentJob.isPossible = true;
+					
+					break;
+				}
+			} else {
+				currentJob = null;
+			}
+		}
+		
+		if (!here) {
+			if (walkingTimer++ >= 10) {
+				walkingTimer = 0;
+				if (hunting != null) goingTo = level.getTile(hunting.x, hunting.y);
+				if (!level.exists(goingTo)) goingTo = null;
+				directionToTile(goingTo);
+			}
+			
+			if (!level.collides(this, (int) (fuzzX + xd), (int) (fuzzY))) fuzzX += xd;
+			if (!level.collides(this, (int) (fuzzX), (int) (fuzzY + yd))) fuzzY += yd;
+
+			x = (int) fuzzX;
+			y = (int) fuzzY;
+			
+			if (level.isUnder(goingTo, this)) here = true;
+		} else if (currentJob != null) {
+			done = action.start(goingTo.x, goingTo.y, level, this);
+		} else if (rand.nextInt(60) == 0) {
+			goingTo = level.getTile(x+rand.nextInt(5)-2, y+rand.nextInt(5)-2);
+			directionToTile(goingTo);
+			
+			here = false;
+		}
+	}
+	
+	private void directionToTile(Tile tile) {
+		if (tile == null) return;
+		
+		double xx = tile.x-fuzzX;
+		double yy = tile.y-fuzzY;
+		
+		double length = Math.sqrt(xx*xx+yy*yy);
+
+		xd = xx/length*speed;
+		yd = yy/length*speed;
+	}
+	
+	public void render(Renderer renderer) {
+		if (xd > 0)
+			renderer.draw(Loader.Sprites, x+(attacking?1:0), y, (tex%16)*8, (tex/16+(isFemale?1:0))*8, 2, 6);
+		else
+			renderer.drawFlip(Loader.Sprites, x-(attacking?1:0), y, (tex%16)*8, (tex/16+(isFemale?1:0))*8, 2, 6);
+	}
+}

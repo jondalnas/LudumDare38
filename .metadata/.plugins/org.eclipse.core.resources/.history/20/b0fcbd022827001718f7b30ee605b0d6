@@ -1,0 +1,43 @@
+package com.Jonas.LD38.Grapics;
+
+public class Bitmap {
+	public final int width, height;
+	public int[] pixels;
+	
+	public Bitmap(int width, int height) {
+		this.width = width;
+		this.height = height;
+		
+		pixels = new int[width*height];
+	}
+	
+	public void draw(Bitmap texture, int x, int y, int x0, int y0, int x1, int y1) {
+		for (int yy = 0; yy < y1; yy++) {
+			int yPix = yy+y0;
+			if (yPix < 0 || yPix >= texture.height) continue;
+			
+			int ys = yy+y;
+			if (ys < 0 || ys >= height) continue;
+			
+			for (int xx = 0; xx < x1; xx++) {
+				int xPix = xx+x0;
+				if (xPix < 0 || xPix >= texture.width) continue;
+				
+				int xs = xx+x;
+				if (xs < 0 || xs >= width) continue;
+				
+				if (getPixel(xPix, yPix) == 0xff00ff) continue;
+				
+				setPixel(texture.getPixel(xPix, yPix), xs, ys);
+			}
+		}
+	}
+	
+	public int getPixel(int x, int y) {
+		return pixels[x+y*width];
+	}
+	
+	public void setPixel(int color, int x, int y) {
+		pixels[x+y*width] = color;
+	}
+}

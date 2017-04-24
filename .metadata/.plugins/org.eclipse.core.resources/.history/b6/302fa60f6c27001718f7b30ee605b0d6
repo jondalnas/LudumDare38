@@ -1,0 +1,11 @@
+package com.Jonas.LD38.Level.Tile;
+
+public enum Zone {
+	none(0),
+	growing(0x005800),
+	building(0xBCBCBC),
+	tree(0x503000);
+	Zone(int color) {
+		
+	}
+}

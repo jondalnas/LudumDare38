@@ -1,0 +1,7 @@
+package com.Jonas.LD38.Level;
+
+import com.Jonas.LD38.Entity.Animal.Animal;
+
+public class Chicken extends Animal {
+
+}

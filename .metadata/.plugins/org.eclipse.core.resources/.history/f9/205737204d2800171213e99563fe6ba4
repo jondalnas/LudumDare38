@@ -1,0 +1,14 @@
+package com.Jonas.LD38.Level.Tile;
+
+import com.Jonas.LD38.Grapics.Renderer;
+
+public class Wheet extends Tile {
+	public int growing;
+	
+	public Wheet() {
+	}
+	
+	public void render(Renderer renderer) {
+		renderer.setPixel(growing==0?0x503000:(growing==1?0x00B800:0xF8B800), x, y);
+	}
+}

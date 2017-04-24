@@ -1,0 +1,10 @@
+package com.Jonas.LD38.Level.Tile;
+
+public class Grass extends Tile {
+
+	public Grass(int x, int y) {
+		super(x, y);
+		color = 0x58D854;
+	}
+
+}

@@ -1,0 +1,20 @@
+package com.Jonas.LD38.Entity;
+
+import com.Jonas.LD38.Grapics.Loader;
+import com.Jonas.LD38.Grapics.Renderer;
+
+public class Particle {
+	public int x, y;
+	private int tex;
+
+	public Particle(int x, int y, int tex) {
+	}
+	
+	public void tick() {
+		
+	}
+	
+	public void renderer(Renderer renderer) {
+		renderer.draw(Loader.Sprites, x, y, tex%16*8, tex/16*8, 8, 8);
+	}
+}

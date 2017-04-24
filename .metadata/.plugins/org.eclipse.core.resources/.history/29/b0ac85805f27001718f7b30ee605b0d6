@@ -1,0 +1,14 @@
+package com.Jonas.LD38.Level.Tile;
+
+import com.Jonas.LD38.Grapics.Loader;
+import com.Jonas.LD38.Grapics.Renderer;
+
+public class Tree extends Tile {
+	public Tree(int x, int y) {
+		super(x, y);
+	}
+	
+	public void render(Renderer renderer) {
+		renderer.draw(Loader.Sprites, x-1, y-1, 0, 4*16, 8, 8);
+	}
+}

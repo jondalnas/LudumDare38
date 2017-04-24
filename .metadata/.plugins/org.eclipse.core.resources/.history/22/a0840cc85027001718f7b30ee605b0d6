@@ -1,0 +1,9 @@
+package com.Jonas.LD38.Level.Tile;
+
+public class Sand extends Tile {
+
+	public Sand(int x, int y) {
+		super(x, y);
+		color = 0xF8D878;
+	}
+}

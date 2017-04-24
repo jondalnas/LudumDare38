@@ -1,0 +1,19 @@
+package com.Jonas.LD38.Jobs;
+
+import com.Jonas.LD38.Entity.Human;
+import com.Jonas.LD38.Jobs.Actions.JobAction;
+import com.Jonas.LD38.Level.Level;
+
+public class HuntingAction extends JobAction {
+	private int cooloff;
+	
+	public boolean start(int x, int y, Level level, Human human) {
+		if (cooloff++ >= 100) {
+			human.attacking = true;
+			human.hunting.damage();
+			
+			if (human.hunting.dead) return true;
+		}
+		return false;
+	}
+}

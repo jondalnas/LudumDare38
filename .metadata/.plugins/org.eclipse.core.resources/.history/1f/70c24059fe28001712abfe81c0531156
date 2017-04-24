@@ -1,0 +1,151 @@
+package com.Jonas.LD38;
+
+import java.awt.BorderLayout;
+import java.awt.Canvas;
+import java.awt.Dimension;
+import java.awt.Graphics;
+import java.awt.Image;
+import java.awt.image.BufferStrategy;
+import java.awt.image.BufferedImage;
+import java.awt.image.DataBufferInt;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.imageio.ImageIO;
+import javax.swing.ImageIcon;
+import javax.swing.JFrame;
+import javax.swing.JPanel;
+
+import com.Jonas.LD38.Grapics.Renderer;
+
+public class Main extends Canvas implements Runnable {
+	private static final long serialVersionUID = 1L;
+	
+	public static int WIDTH = 160, HEIGHT = 120;
+	public static int SCALE = 6;
+	
+	private int[] pixels;
+	
+	private BufferedImage img;
+	private static ArrayList<Image> icons = new ArrayList<Image>(3);
+	private Thread thread;
+	private Renderer renderer;
+	private Game game;
+	private Listener listener;
+	
+	private boolean running;
+	
+	public Main() {
+		Dimension size = new Dimension(WIDTH * SCALE, HEIGHT * SCALE);
+		
+		setSize(size);
+		
+		try {
+			icons.add(ImageIO.read(Main.class.getResourceAsStream("/tex/icon16x16.png")));
+			icons.add(ImageIO.read(Main.class.getResourceAsStream("/tex/icon32x32.png")));
+			icons.add(ImageIO.read(Main.class.getResourceAsStream("/tex/icon64x64.png")));
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
+		img = new BufferedImage(WIDTH, HEIGHT, BufferedImage.TYPE_INT_RGB);
+		pixels = ((DataBufferInt) img.getRaster().getDataBuffer()).getData();
+		
+		renderer = new Renderer(WIDTH, HEIGHT);
+		game = new Game(WIDTH, HEIGHT);
+		renderer.game = game;
+		listener = new Listener();
+		game.listener = listener;
+
+		addKeyListener(listener);
+		addMouseListener(listener);
+		addMouseMotionListener(listener);
+	}
+
+	public static void main(String[] args) {
+		Main game = new Main();
+		
+		JFrame frame = new JFrame("Live or DIE!");
+		JPanel panel = new JPanel(new BorderLayout());
+		
+		panel.add(game, 0);
+		
+		frame.setContentPane(panel);
+		frame.pack();
+		frame.setLocationRelativeTo(null);
+		frame.setResizable(false);
+		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		frame.setVisible(true);
+		
+		frame.setSize(new Dimension(frame.getWidth(), frame.getHeight()));
+		frame.setPreferredSize(frame.getSize());
+		frame.setIconImages(icons);
+		
+		game.start();
+	}
+	
+	public void start() {
+		if (running) return;
+		running = true;
+		
+		thread = new Thread(this);
+		thread.start();
+	}
+
+	int wantedFPS = 60;
+	int FPS;
+	public void run() {
+		long last = System.currentTimeMillis();
+		long curr = System.currentTimeMillis();
+		int time = 0;
+		int totalDifference = 0;
+		
+		requestFocus();
+		
+		while (running) {
+			curr = System.currentTimeMillis();
+			
+			time += curr-last;
+			totalDifference += curr-last;
+			if (time >= (1.0/wantedFPS)*1000L) {
+				tick();
+				
+				render();
+				FPS++;
+				time = 0;
+			}
+			
+			if (totalDifference >= 1000) {
+				System.out.println("FPS: " + FPS);
+				FPS = 0;
+				totalDifference = 0;
+			}
+			last = curr;
+		}
+	}
+	
+	public void tick() {
+		game.tick();
+	}
+	
+	public void render() {
+		BufferStrategy bs = getBufferStrategy();
+		if (bs == null) {
+			createBufferStrategy(3);
+			return;
+		}
+		
+		renderer.render();
+		
+		for (int i = 0; i < pixels.length; i++) {
+			pixels[i] = renderer.pixels[i];
+		}
+		
+		Graphics graphics = bs.getDrawGraphics();
+		graphics.fillRect(0, 0, getWidth(), getHeight());
+		graphics.drawImage(img, 0, 0, this.getWidth(), this.getHeight(), null);
+		graphics.dispose();
+		bs.show();
+	}
+}

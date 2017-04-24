@@ -1,0 +1,52 @@
+package com.Jonas.LD38.Entity.Animal;
+
+import com.Jonas.LD38.Entity.Entity;
+import com.Jonas.LD38.Grapics.Loader;
+import com.Jonas.LD38.Grapics.Renderer;
+
+import java.util.Random;
+
+public class Animal extends Entity {
+	private double fuzzX, fuzzY;
+	private int jumping;
+	
+	protected double movementSpeed;
+	
+	public boolean isFemale;
+	
+	Random rand = new Random();
+	
+	private boolean moveing;
+	private int stillTime;
+	private int cooldown = 120;
+	private double xd, yd;
+	
+	public Animal(int x, int y, int tex) {
+		super(x, y, tex);
+		
+		isFemale = new Random().nextBoolean();
+	}
+	
+	public void tick() {
+		jumping++;
+		
+		if (stillTime++ >= cooldown && rand.nextInt(150) == 0) {
+			stillTime = 0;
+			moveing = true;
+			yd = new Random().nextDouble()*movementSpeed;
+			xd = new Random().nextDouble()*movementSpeed;
+		}
+		
+		if (moveing) {
+			fuzzX += xd;
+			fuzzY += yd;
+			
+			x = (int) fuzzX;
+			y = (int) fuzzY;
+		}
+	}
+	
+	public void render(Renderer renderer) {
+		renderer.draw(Loader.Sprites, x, y+(jumping%15<10?0:-1), (tex%16)*8, (tex/16+(isFemale?1:0))*8, 8, 8);
+	}
+}

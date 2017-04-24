@@ -1,0 +1,27 @@
+package com.Jonas.LD38.Entity.Animal;
+
+import com.Jonas.LD38.Entity.Entity;
+import com.Jonas.LD38.Grapics.Loader;
+import com.Jonas.LD38.Grapics.Renderer;
+
+import java.util.Random;
+
+public class Animal extends Entity {
+	public boolean isFemale;
+	
+	private int jumping;
+	
+	public Animal(int x, int y, int tex) {
+		super(x, y, tex);
+		
+		isFemale = new Random().nextBoolean();
+	}
+	
+	public void tick() {
+		jumping++;
+	}
+	
+	public void render(Renderer renderer) {
+		renderer.draw(Loader.Sprites, x, y+(jumping%15<10?0:1), (tex%16)*8, (tex/16+(isFemale?1:0))*8, 8, 8);
+	}
+}

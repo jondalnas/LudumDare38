@@ -1,0 +1,90 @@
+package com.Jonas.LD38;
+
+import java.awt.BorderLayout;
+import java.awt.Canvas;
+import java.awt.Dimension;
+import java.awt.Graphics;
+import java.awt.image.BufferStrategy;
+import java.awt.image.BufferedImage;
+import java.awt.image.DataBufferInt;
+
+import javax.swing.JFrame;
+import javax.swing.JPanel;
+
+public class Main extends Canvas implements Runnable {
+	private static final long serialVersionUID = 1L;
+	
+	public static int WIDTH = 160, HEIGHT = 120;
+	public static int SCALE = 4;
+	
+	private int[] pixels;
+	
+	private BufferedImage img;
+	private Thread thread;
+	
+	private boolean running;
+	
+	public Main() {
+		Dimension size = new Dimension(WIDTH * SCALE, HEIGHT * SCALE);
+		
+		setSize(size);
+		
+		img = new BufferedImage(WIDTH, HEIGHT, BufferedImage.TYPE_INT_RGB);
+		pixels = ((DataBufferInt) img.getRaster().getDataBuffer()).getData();
+	}
+
+	public static void main(String[] args) {
+		Main game = new Main();
+		
+		JFrame frame = new JFrame("Game");
+		JPanel panel = new JPanel(new BorderLayout());
+		
+		panel.add(game, 0);
+		
+		frame.setContentPane(panel);
+		frame.pack();
+		frame.setLocationRelativeTo(null);
+		frame.setResizable(true);
+		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		frame.setVisible(true);
+		
+		frame.setSize(new Dimension(frame.getWidth(), frame.getHeight()));
+		frame.setPreferredSize(frame.getSize());
+		
+		game.start();
+	}
+	
+	public void start() {
+		if (running) return;
+		running = true;
+		
+		thread = new Thread(this);
+		thread.start();
+	}
+
+	public void run() {
+		while (running) {
+			tick();
+			
+			render();
+		}
+	}
+	
+	public void tick() {
+		
+	}
+	
+	public void render() {
+		BufferStrategy bs = getBufferStrategy();
+		if (bs == null) {
+			createBufferStrategy(3);
+			return;
+		}
+		
+		Graphics graphics = bs.getDrawGraphics();
+		graphics.fillRect(0, 0, getWidth(), getHeight());
+		graphics.drawImage(img, 0, 0, this.getWidth(), this.getHeight(), null);
+		graphics.dispose();
+		bs.show();
+	}
+}
